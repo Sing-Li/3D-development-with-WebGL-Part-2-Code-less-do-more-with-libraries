@@ -1,0 +1,71 @@
+<!doctype html>
+<html>
+<head>
+  <title>developerWorks WebGL Three.js Example</title>
+  <script src="Three.js" ></script>
+  <script type="text/javascript">
+  function draw2D()  {
+      var canvas = document.getElementById("shapecanvas");
+      var c2dCtx = null;
+      var exmsg = "Cannot get 2D context from canvas";
+      try {
+        c2dCtx = canvas.getContext('2d');
+      }
+      catch (e)
+      {
+        exmsg = "Exception thrown: " + e.toString();
+      }
+      if (!c2dCtx) {
+        alert(exmsg);
+        throw new Error(exmsg);
+      }
+      c2dCtx.fillStyle = "#0000ff";
+      c2dCtx.beginPath();
+      c2dCtx.moveTo(250, 40);    
+      c2dCtx.lineTo(450, 250);         // Bottom Right
+      c2dCtx.lineTo(50, 250);         // Bottom Left
+      c2dCtx.closePath();
+      c2dCtx.fill();
+    
+  }
+  
+ 
+  function draw3D()  { 
+    function animate() {
+      requestAnimationFrame(animate);
+      pyramid.rotateY(Math.PI / 180);
+      renderer.render(scene, camera);
+    }
+    var geo = new THREE.CylinderGeometry(0,2,2,4,1, true);
+    var faceColors = [0xff0000, 0x00ff00, 0x0000ff, 0xffff00];
+    console.log(geo.vertices);
+    console.log(geo.faces);
+    faceColors.forEach( function(color, idx) { geo.faces[2 * idx + 1].color.setHex(color);});
+    var pyramid = new THREE.Mesh(geo, new THREE.MeshBasicMaterial({vertexColors: THREE.FaceColors}));
+    var camera = new THREE.PerspectiveCamera(  45, 1,0.1, 100);                         
+    pyramid.position.y = 1;  camera.position.z = 6;
+    var scene = new THREE.Scene();
+    scene.add(pyramid);
+    var renderer = new THREE.WebGLRenderer();
+    renderer.setSize(500,500);
+    var span = document.getElementById("shapecanvas2");
+    span.appendChild( renderer.domElement );
+    animate();
+    
+  }
+
+</script>
+
+
+
+</head>
+<body onload="draw2D();draw3D();">
+
+  <canvas id="shapecanvas" class="front" width="500" height="500"></canvas>
+  <span id="shapecanvas2" style="border: none;" width="500" height="500"></span>
+
+  <br/>
+  </body>
+  
+
+</html>

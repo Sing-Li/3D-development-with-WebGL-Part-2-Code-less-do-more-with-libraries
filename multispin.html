@@ -1,0 +1,69 @@
+<!doctype html>
+<html>
+<head>
+  <title>developerWorks WebGL Three.js Multi-rotations Example</title>
+  <script src="Three.js" ></script>
+  <script type="text/javascript">
+  
+ 
+  function draw3D()  { 
+    function animate() {
+      requestAnimationFrame(animate);
+      pyramid1.rotateY(Math.PI/180);
+      pyramid2.rotateY(-(Math.PI/180));
+      cube.rotateY(Math.PI/180); cube.rotateX(Math.PI/90);
+      multi.rotateY(Math.PI/360);
+      renderer.render(scene, camera);
+    }
+
+    var geo = new THREE.CylinderGeometry(0,2,2,4,1, true);
+    var faceColors = [0xff0000, 0x00ff00, 0x0000ff, 0xffff00];
+    faceColors.forEach( function(color, idx) { geo.faces[2 * idx + 1].color.setHex(color);});
+    var pyramid1 = new THREE.Mesh(geo, new THREE.MeshBasicMaterial({vertexColors: THREE.FaceColors}));
+    pyramid1.position.set(-2.5, -1 , 0); 
+    var pyramid2 = pyramid1.clone();
+    pyramid1.position.set(2.5, -1 , 0); 
+    
+    geo = new THREE.CubeGeometry(2,2,2);
+    console.log(geo.faces.length);
+    faceColors = [0xff0000, 0x00ff00, 0x0000ff, 0xffff00, 0x00ffff, 0xff00ff];    
+    faceColors.forEach( function(color, idx) { geo.faces[2 * idx + 1].color.setHex(color);
+     geo.faces[2*idx].color.setHex(color);});
+    var cube = new THREE.Mesh(geo, new THREE.MeshBasicMaterial({vertexColors: THREE.FaceColors}));
+    cube.position.set(0,1,0); 
+    
+    var camera = new THREE.PerspectiveCamera(  45, 1024/500,0.1, 100);                         
+    camera.position.z = 7;
+
+    var multi = new THREE.Object3D();
+    multi.add(cube);
+    multi.add(pyramid1);
+    multi.add(pyramid2);
+    multi.position.z = 0;  
+
+    var scene = new THREE.Scene();
+    scene.add(multi);
+
+    var div = document.getElementById("shapecanvas2");
+    var renderer = new THREE.WebGLRenderer();
+    renderer.setSize(1024,500);
+    div.appendChild( renderer.domElement );
+
+    animate();
+    
+  }
+
+</script>
+
+
+
+</head>
+<body onload="draw3D();">
+
+  <span id="shapecanvas2" style="border: none;" width="1024" height="500"></span>
+
+  <br/>
+  </body>
+  
+
+</html>

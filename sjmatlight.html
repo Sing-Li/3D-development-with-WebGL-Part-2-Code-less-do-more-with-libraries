@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>developerWorks WebGL SceneJS Example</title>
+    <meta charset="utf-8">
+    
+    <script src="./scenejs.js"></script>
+
+<script>
+    SceneJS.setConfigs({
+        pluginPath:"./plugins"
+    });
+
+
+   var threeShapes =  [{
+                         type:"material",
+                        color:{ r:0.0, g:0, b:1.0 },
+
+                        nodes:[
+                            {
+                                type:"translate",
+                                y: 1,
+                                nodes: [
+                                    {
+                                        type:"rotate",
+                                        id:"cube1",
+                                        
+                                        y:1.0,
+                                        angle:0,
+
+                                        nodes:[
+
+                                            {
+                                                type:"prims/box",
+                                                xSize: 1,
+                                                ySize: 1,
+                                                zSize: 1
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+
+                        
+                    }
+                    ,
+                    
+                    {
+                    type:"material",
+                        color:{ r:0.0, g:1.0, b:0 },
+
+                        nodes:[
+                            {
+                                type:"translate",
+                                x: 2.5,
+                                y: -1,
+                                nodes: [
+                                    {
+                                        type:"rotate",
+                                        id:"sphere1",
+                                        
+                                        y:1.0,
+                                        angle:0,
+
+                                        nodes:[
+
+                                            {
+                                                type:"prims/sphere",
+                                                slices: 25,
+                                                rings: 25,
+                                                radius: 1
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+
+                    {
+                    type:"material",
+                        color:{ r:1.0, g:0.0, b:0 },
+
+                        nodes:[
+                            {
+                                type:"translate",
+                                x: -2.5,
+                                y: -1,
+                                nodes: [
+                                    {
+                                        type:"rotate",
+                                        id:"pyramid1",
+                                        
+                                        y:1.0,
+                                        angle:0,
+
+                                        nodes:[
+
+                                            {
+                                                type:"prims/cylinder",
+                                                radiusTop: 0,
+                                                radiusBottom: 2,
+                                                height: 2,
+                                                radialSegments: 4,
+                                                openEnded: true
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ];
+
+
+
+    var sceneNodes = {
+        nodes:[
+            {
+                type:"lights",
+                id:"myLights", // So we can reference this lights node
+                lights:[
+                            {
+                                mode:"dir",
+                                color:{ r:1.0, g:1.0, b:1.0 },
+                                diffuse:true,
+                                specular:true,
+                                dir:{ x:-5, y:-2, z:-5 },
+                                space:"view"
+                            }
+                ],
+
+                nodes:[
+                
+                   
+
+                    {
+                        type:"material",
+                        color:{ r:1.0, g:1, b:1.0 },
+                        emit: 0.5,
+                        nodes:[
+                            {
+                                type:"translate",
+                                y: -2,
+                                nodes: [
+                                    {
+                                        type:"rotate",
+                                        x: 1,
+                                        angle: -90,
+                                        
+                                        multOrder: "pre",
+                                        nodes:[
+
+                                            {
+                                                type:"prims/plane",
+                                                width: 20,
+                                                height: 25,
+                                             
+                                             }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+
+                        
+                    }
+                    ,
+                     
+                     {
+
+                        type: "rotate",
+                        y: 1,
+                        angle: 0,
+                        id: "multi",
+                        nodes:threeShapes
+
+                     }
+
+
+
+                ]
+            }
+        ]
+    };
+
+   function rotateObject(id, degreeInc) {
+       scene.getNode(id,
+            function (obj) {
+                var angle = 0;
+                scene.on("tick",
+                        function () {
+                            angle = angle + degreeInc;
+                            obj.setAngle(angle);
+                         
+                        });
+            });
+ 
+   }
+   var scene = undefined;
+   function setUp() {
+     scene = SceneJS.createScene({
+        canvasId: "shapecanvas2",
+        nodes:[            
+            {
+                type:"lookAt",
+                eye:{ y:1, z:10 },
+                look:{ x:0, y:0, z:0 },
+                nodes: 
+             [
+                { type:"camera",
+                  optics: {
+                    type: "perspective",
+                    fovy: 45.0,
+                    aspect: 1024/500,
+                    near: 0.10,
+                    far : 100
+
+                  },
+                  nodes: [sceneNodes]
+                }
+            
+              ]
+            }
+            ]
+        });
+
+    rotateObject("cube1", 1);
+    rotateObject("sphere1", 1);
+    rotateObject("pyramid1", 1);
+    rotateObject("multi", - 0.25);
+  
+   }
+</script>
+</head>
+<body onload="setUp()">
+
+  <canvas id="shapecanvas2" style="border: none;" width="1024" height="500"></canvas>
+
+  <br/>
+  </body>
+</html>
